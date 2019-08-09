@@ -1,0 +1,23 @@
+{
+    "name": "yii2cmf/yii2-tinymce-widget",
+    "description": "TinyMCE widget for Yii2.",
+    "type": "yii2-extension",
+    "version" : "0.1",
+    "keywords": ["yii2","extension","tinymce"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Shandyrov Askar",
+            "email": "shandyrov@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "~2.0.0",
+        "tinymce/tinymce": "5.0.13"
+    },
+    "autoload": {
+        "psr-4": {
+            "yii2cmf\\tinymce\\": "src"
+        }
+    }
+}
