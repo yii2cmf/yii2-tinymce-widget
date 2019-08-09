@@ -8,7 +8,7 @@ use yii\widgets\InputWidget;
 
 class TinyMCE extends InputWidget
 {
-    public $plugins = 'code, table, media, image, textcolor';
+    public $plugins = ['code', 'table', 'media', 'image'];
 
     public function init()
     {
