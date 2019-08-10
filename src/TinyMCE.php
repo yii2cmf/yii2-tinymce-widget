@@ -6,9 +6,18 @@ use yii\helpers\Url;
 use yii\web\View;
 use yii\widgets\InputWidget;
 
+/**
+ * Class TinyMCE
+ * @package yii2cmf\tinymce
+ */
 class TinyMCE extends InputWidget
 {
-    public $plugins = ['code', 'table', 'media', 'image'];
+    public $width = '100%';
+    public $height = '400px';
+    public $branding = false;
+    public $menubar = true;
+    public $toolbar = true;
+    public $plugins = ['code', 'table', 'media', 'image', 'paste', 'imagetools', 'link', 'powerpaste', 'advlist'];
 
     public function init()
     {
@@ -28,17 +37,27 @@ class TinyMCE extends InputWidget
     private function registerPlugin()
     {
         $bundle = TinyMCEWidgetAsset::register($this->getView());
+
         $options_id = $this->options['id'];
         $lang = $this->getLanguage();
-        $plugins = $this->getPlugins();
+        $plugins = $this->getPluginsString();
+        $branding = $this->getBoolToStr($this->branding);
+        $menubar = $this->getBoolToStr($this->menubar);
+        $toolbar = $this->getBoolToStr($this->toolbar);
+
         $this->getView()->registerJs("
             tinymce.init({
-            selector: '#$options_id',
-            plugins: '$plugins',
-            language: '$lang',
-            language_url: '$bundle->baseUrl/langs/$lang.js'
+              selector: \"#$options_id\",
+              plugins: \"$plugins\",
+              height: \"$this->height\",
+              width: \"$this->width\",
+              branding: $branding,
+              menubar: $menubar,
+              toolbar: $toolbar,
+              language: \"$lang\",
+              language_url: \"$bundle->baseUrl/langs/$lang.js\"
         });
-        ", View::POS_END);
+        ", View::POS_READY);
     }
 
     private function getLanguage()
@@ -53,12 +72,13 @@ class TinyMCE extends InputWidget
         }
     }
 
-    private function getPlugins()
+    private function getPluginsString()
     {
-        $plugins = '';
-        foreach ($this->plugins as $plugin) {
-            $plugins .= ','.$plugin;
-        }
-        return $plugins;
+        return implode(' ', $this->plugins);
+    }
+
+    private function getBoolToStr($bool)
+    {
+        return boolval($bool) ? 'true' : 'false';
     }
 }

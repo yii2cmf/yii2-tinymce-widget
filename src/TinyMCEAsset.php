@@ -3,6 +3,10 @@ namespace yii2cmf\tinymce;
 
 use yii\web\AssetBundle;
 
+/**
+ * Class TinyMCEAsset
+ * @package yii2cmf\tinymce
+ */
 class TinyMCEAsset extends AssetBundle
 {
 
