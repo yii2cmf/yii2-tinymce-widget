@@ -28,4 +28,9 @@ Usage
 Once the extension is installed, simply use it in your code by  :
 
 ```php
-<?= \yii2cmf\tinymce\AutoloadExample::widget(); ?>```
+<?= $form->field($model, 'post_content')->widget(\yii2cmf\tinymce\TinyMCE::class) ?>
+```
+With config
+```php
+<?= $form->field($model, 'post_content')->widget(\yii2cmf\tinymce\TinyMCE::class, ['height' => '400px', 'width' => '100%', 'plugins' => ['code', 'table', 'media', 'image']]) ?>
+```
