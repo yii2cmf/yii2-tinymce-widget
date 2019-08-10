@@ -17,8 +17,7 @@ class TinyMCE extends InputWidget
     public $branding = false;
     public $menubar = true;
     public $toolbar = true;
-    public $image_upload_url;
-    public $plugins = ['code', 'table', 'media', 'image', 'paste', 'imagetools', 'link', 'advlist'];
+    public $plugins = ['code', 'table', 'media', 'image', 'paste', 'imagetools', 'link', 'powerpaste', 'advlist'];
 
     public function init()
     {
@@ -43,11 +42,8 @@ class TinyMCE extends InputWidget
         $lang = $this->getLanguage();
         $plugins = $this->getPluginsString();
         $branding = $this->getBoolToStr($this->branding);
-        $menubar = is_bool($this->menubar) ? $this->getBoolToStr($this->menubar) : $this->menubar;
-        $toolbar = is_bool($this->toolbar) ? $this->getBoolToStr($this->toolbar) : $this->toolbar;
-
-        $image_upload_url = $this->image_upload_url;
-        $images_upload_handler = $this->getImagesUploadHandler();
+        $menubar = $this->getBoolToStr($this->menubar);
+        $toolbar = $this->getBoolToStr($this->toolbar);
 
         $this->getView()->registerJs("
             tinymce.init({
@@ -59,11 +55,7 @@ class TinyMCE extends InputWidget
               menubar: $menubar,
               toolbar: $toolbar,
               language: \"$lang\",
-              language_url: \"$bundle->baseUrl/langs/$lang.js\",
-              images_upload_url: '$image_upload_url',
-              images_upload_handler: $images_upload_handler,
-              automatic_uploads: true,
-              file_picker_types: 'image',
+              language_url: \"$bundle->baseUrl/langs/$lang.js\"
         });
         ", View::POS_READY);
     }
@@ -88,37 +80,5 @@ class TinyMCE extends InputWidget
     private function getBoolToStr($bool)
     {
         return boolval($bool) ? 'true' : 'false';
-    }
-
-    private function getImagesUploadHandler()
-    {
-        return " function(blobInfo, success, failure){                
-                var xhr, formData;
-                                                
-                xhr = new XMLHttpRequest();
-                xhr.withCridentials = false;
-                xhr.open('POST', '$this->image_upload_url');
-                xhr.onload = function () {
-                    var json;
-                    if (xhr.status != 200) {
-                        failure('HTTP Error: ' + xhr.status);
-                        return;
-                    }
-                    
-                    json = JSON.parse(xhr.responseText);
-                    
-                    if (!json || typeof json.location != 'string') {
-                        failure('Invalid JSON: ' + xhr.responseText);
-                        return;
-                    }
-                    success(json.location);
-                };
-                
-                formData = new FormData();
-                formData.append('_csrf', yii.getCsrfToken());
-                formData.append('editor_file', blobInfo.blob(), blobInfo.filename());
-                                
-                xhr.send(formData);
-            }";
     }
 }
